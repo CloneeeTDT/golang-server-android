@@ -1,0 +1,53 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Build application
+        run: go build -o main .
+
+      - name: Run tests
+        run: go test -v ./...
+
+      - name: Set up Docker environment
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: false
+
+      - name: Start PostgreSQL database
+        uses: docker/compose-action@1.2.2
+        with:
+          compose-file: docker-compose.yaml
+          compose-command: up -d db
+
+      - name: Run application
+        uses: docker/compose-action@1.2.2
+        with:
+          compose-file: docker-compose.yaml
+          compose-command: up -d app
+
+      - name: Deploy to Docker container
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: myrepo/myimage:latest
+          dockerfile: Dockerfile.prod
