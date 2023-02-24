@@ -2,15 +2,22 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
+    environment: DEFAULT
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Set up Go
         uses: actions/setup-go@v2
@@ -33,13 +40,13 @@ jobs:
           push: false
 
       - name: Start PostgreSQL database
-        uses: docker/compose-action@1.2.2
+        uses: isbang/compose-action@v1.4.1
         with:
           compose-file: docker-compose.yaml
           compose-command: up -d db
 
       - name: Run application
-        uses: docker/compose-action@1.2.2
+        uses: isbang/compose-action@v1.4.1
         with:
           compose-file: docker-compose.yaml
           compose-command: up -d app
@@ -49,5 +56,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: myrepo/myimage:latest
+          tags: cloneee/golang-android-server:latest
           dockerfile: Dockerfile.prod
