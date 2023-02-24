@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: huytheadmin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: mydict
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  app:
+    build: .
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: huytheadmin
+      DB_PASSWORD: admin123
+      DB_NAME: mydict
+
+volumes:
+  db_data:
