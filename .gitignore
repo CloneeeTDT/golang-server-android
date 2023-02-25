@@ -91,3 +91,5 @@ fabric.properties
 .env
 .idea
 docker-compose.prod.yaml
+config.yaml
+!config.example.yaml

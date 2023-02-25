@@ -13,18 +13,12 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
   app:
-    image: cloneee/golang-android-server
+    build: .
     restart: always
     ports:
       - "8080:8080"
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: huytheadmin
-      DB_PASSWORD: admin123
-      DB_NAME: mydict
 
 volumes:
   db_data:

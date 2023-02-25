@@ -1,16 +1,13 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
+	"golang-server-android/config"
+	"golang-server-android/db"
+	"golang-server-android/server"
 )
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	config.Init()
+	db.Init()
+	server.Init()
 }
