@@ -13,7 +13,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
   app:
-    build: .
+    image: cloneee/golang-android-server
     restart: always
     ports:
       - "8080:8080"
