@@ -11,3 +11,9 @@ type RegisterRequest struct {
 	Password string `json:"password" binding:"required"`
 	Birthday string `json:"birthday" binding:"required"`
 }
+
+type SaveWordRequest struct {
+	WordID uint   `json:"word_id" binding:"required"`
+	UserID uint   `json:"user_id" binding:"required"`
+	Note   string `json:"note"`
+}

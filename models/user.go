@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"golang-server-android/db"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/datatypes"
@@ -21,7 +20,6 @@ type User struct {
 func (u User) GetByEmail(email string) (*User, error) {
 	database := db.GetDb()
 
-	fmt.Println(database)
 	queryResult := database.Find(&u, "email = ?", email)
 	if queryResult.Error != nil {
 		return nil, queryResult.Error
