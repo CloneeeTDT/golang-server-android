@@ -19,7 +19,13 @@ func NewRouter() *gin.Engine {
 		userGroup := v1.Group("user")
 		{
 			user := new(controllers.UserController)
-			userGroup.GET("/:id", user.Retrieve)
+			userGroup.GET("/:id", user.GetInfo)
+		}
+		authGroup := v1.Group("auth")
+		{
+			auth := new(controllers.AuthController)
+			authGroup.POST("/login", auth.Login)
+			authGroup.POST("/register", auth.Register)
 		}
 	}
 	return router
