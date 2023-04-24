@@ -11,6 +11,7 @@ COPY . /app
 RUN go mod download
 
 # Build the Go binary
+ENV RUN_ENV PROD
 RUN go build -o main .
 
 # Expose the port on which the server will run

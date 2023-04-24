@@ -13,7 +13,16 @@ type RegisterRequest struct {
 }
 
 type SaveWordRequest struct {
+	WordID uint `json:"word_id" binding:"required"`
+	UserID uint `json:"user_id" binding:"required"`
+}
+
+type SaveNoteRequest struct {
 	WordID uint   `json:"word_id" binding:"required"`
 	UserID uint   `json:"user_id" binding:"required"`
-	Note   string `json:"note"`
+	Note   string `json:"note" binding:"required"`
+}
+
+type OCRRequest struct {
+	Image string `json:"image" binding:"required"`
 }

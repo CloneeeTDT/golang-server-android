@@ -8,7 +8,6 @@ import (
 type SavedWord struct {
 	WordID    uint `gorm:"primary_key;not_null, autoIncrement:false"`
 	UserID    uint `gorm:"primary_key;not_null, autoIncrement:false"`
-	Note      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -28,8 +27,16 @@ func (s SavedWord) SaveWord(payload SaveWordRequest) error {
 	database := db.GetDb()
 	s.WordID = payload.WordID
 	s.UserID = payload.UserID
-	s.Note = payload.Note
 	queryResult := database.Save(&s)
+	if queryResult.Error != nil {
+		return queryResult.Error
+	}
+	return nil
+}
+
+func (s SavedWord) UnSaveWord(payload SaveWordRequest) error {
+	database := db.GetDb()
+	queryResult := database.Delete(&s, "word_id = ? AND user_id = ?", payload.WordID, payload.UserID)
 	if queryResult.Error != nil {
 		return queryResult.Error
 	}

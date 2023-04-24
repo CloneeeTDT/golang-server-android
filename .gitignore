@@ -92,4 +92,4 @@ fabric.properties
 .idea
 docker-compose.prod.yaml
 config.yaml
-!config.example.yaml
+config.prod.yaml
