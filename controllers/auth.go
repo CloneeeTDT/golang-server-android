@@ -29,7 +29,7 @@ func (u AuthController) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Wrong password"})
 		return
 	}
-	token, err := helpers.GenerateJWT(user.Email)
+	token, err := helpers.GenerateJWT(user.Email, user.ID)
 	c.JSON(http.StatusOK, gin.H{"token": token})
 	return
 }

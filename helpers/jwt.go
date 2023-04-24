@@ -1,22 +1,28 @@
 package helpers
 
 import (
-	"errors"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"golang-server-android/config"
+	"net/http"
 	"time"
 )
 
-var jwtKey = []byte("supersecretkey")
-
 type JWTClaim struct {
 	Email string `json:"email"`
+	Id    uint   `json:"id"`
 	jwt.StandardClaims
 }
 
-func GenerateJWT(email string) (tokenString string, err error) {
+func GenerateJWT(email string, id uint) (tokenString string, err error) {
+	var (
+		vConfig = config.GetConfig()
+		jwtKey  = []byte(vConfig.GetString("jwt.secret"))
+	)
 	expirationTime := time.Now().Add(24 * 30 * time.Hour)
 	claims := &JWTClaim{
 		Email: email,
+		Id:    id,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -25,25 +31,31 @@ func GenerateJWT(email string) (tokenString string, err error) {
 	tokenString, err = token.SignedString(jwtKey)
 	return
 }
-func ValidateToken(signedToken string) (err error) {
+func ValidateToken(c *gin.Context, signedToken string) (err error) {
+	var (
+		vConfig = config.GetConfig()
+		jwtKey  = []byte(vConfig.GetString("jwt.secret"))
+	)
 	token, err := jwt.ParseWithClaims(
 		signedToken,
 		&JWTClaim{},
 		func(token *jwt.Token) (interface{}, error) {
-			return []byte(jwtKey), nil
+			return jwtKey, nil
 		},
 	)
 	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid token"})
 		return
 	}
 	claims, ok := token.Claims.(*JWTClaim)
 	if !ok {
-		err = errors.New("couldn't parse claims")
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Invalid token"})
 		return
 	}
 	if claims.ExpiresAt < time.Now().Local().Unix() {
-		err = errors.New("token expired")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
+	c.Set("id", claims.Id)
 	return
 }
