@@ -49,6 +49,7 @@ func NewRouter() *gin.Engine {
 			translateGroup.GET("/", translate.GetTranslate)
 			translateGroup.GET("/audio", translate.GetAudio)
 			translateGroup.POST("/ocr", translate.GetOCR)
+			translateGroup.POST("/speech2text", translate.Speech2Text)
 		}
 	}
 	return router
@@ -82,7 +83,10 @@ func JWTMiddleware() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			return
 		}
-
+		if len(strings.Split(authHeader, " ")) < 1 {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Token Format"})
+			return
+		}
 		tokenString := strings.Split(authHeader, " ")[1]
 		err := helpers.ValidateToken(c, tokenString)
 		if err != nil {

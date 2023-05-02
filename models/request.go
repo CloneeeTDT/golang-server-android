@@ -26,3 +26,17 @@ type SaveNoteRequest struct {
 type OCRRequest struct {
 	Image string `json:"image" binding:"required"`
 }
+
+type Speech2TextRequest struct {
+	Audio string `json:"audio"`
+	From  string `json:"from"`
+	To    string `json:"to"`
+}
+
+type Speech2TextResponse struct {
+	Content   string `json:"content"`
+	Translate string `json:"translate"`
+	From      string `json:"from"`
+	To        string `json:"to"`
+	Audio     string `json:"audio"`
+}

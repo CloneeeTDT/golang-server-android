@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -20,7 +19,6 @@ func Init() {
 	}
 	err = config.ReadInConfig()
 	if err != nil {
-		fmt.Println(err.Error())
 		log.Fatal("error on parsing configuration file")
 	}
 }

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang-server-android/helpers"
 	"golang-server-android/models"
@@ -42,7 +41,6 @@ func (u AuthController) Register(c *gin.Context) {
 		return
 	}
 	checkUser, _ := User.GetByEmail(body.Email)
-	fmt.Println(*checkUser)
 	if checkUser.Email != "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Email already exists"})
 		c.Abort()

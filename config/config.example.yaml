@@ -7,3 +7,7 @@ db:
   user: exampleUser
   password: examplePassword
   name: exampleDBName
+jwt:
+  secret: secretcodeorsomethinglikethat
+ocr:
+  key: api-key-for-ocr-service
