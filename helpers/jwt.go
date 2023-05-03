@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"golang-server-android/config"
+	"golang-server-android/models"
 	"net/http"
 	"time"
 )
@@ -11,18 +12,20 @@ import (
 type JWTClaim struct {
 	Email string `json:"email"`
 	Id    uint   `json:"id"`
+	Name  string `json:"name"`
 	jwt.StandardClaims
 }
 
-func GenerateJWT(email string, id uint) (tokenString string, err error) {
+func GenerateJWT(user models.User) (tokenString string, err error) {
 	var (
 		vConfig = config.GetConfig()
 		jwtKey  = []byte(vConfig.GetString("jwt.secret"))
 	)
 	expirationTime := time.Now().Add(24 * 30 * time.Hour)
 	claims := &JWTClaim{
-		Email: email,
-		Id:    id,
+		Email: user.Email,
+		Id:    user.ID,
+		Name:  user.Name,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

@@ -27,6 +27,16 @@ func (u User) GetByEmail(email string) (*User, error) {
 	return &u, nil
 }
 
+func (u User) GetByID(id uint) (*User, error) {
+	database := db.GetDb()
+
+	queryResult := database.Find(&u, "id = ?", id)
+	if queryResult.Error != nil {
+		return nil, queryResult.Error
+	}
+	return &u, nil
+}
+
 func (u User) Register(payload RegisterRequest) error {
 	database := db.GetDb()
 
@@ -43,6 +53,30 @@ func (u User) Register(payload RegisterRequest) error {
 	}
 	u.Birthday = datatypes.Date(birthday)
 	queryResult := database.Create(&u)
+	if queryResult.Error != nil {
+		return queryResult.Error
+	}
+	return nil
+}
+
+func (u User) UpdateInfo(name string) error {
+	database := db.GetDb()
+	u.Name = name
+	queryResult := database.Save(&u)
+	if queryResult.Error != nil {
+		return queryResult.Error
+	}
+	return nil
+}
+
+func (u User) UpdatePassword(password string) error {
+	database := db.GetDb()
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+	queryResult := database.Save(&u)
 	if queryResult.Error != nil {
 		return queryResult.Error
 	}

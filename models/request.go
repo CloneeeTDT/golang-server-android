@@ -12,6 +12,15 @@ type RegisterRequest struct {
 	Birthday string `json:"birthday" binding:"required"`
 }
 
+type UpdateUserRequest struct {
+	Name string `json:"name"`
+}
+
+type UpdatePasswordRequest struct {
+	OldPassword string `json:"old_password" binding:"required"`
+	NewPassword string `json:"new_password" binding:"required"`
+}
+
 type SaveWordRequest struct {
 	WordID uint `json:"word_id" binding:"required"`
 	UserID uint `json:"user_id" binding:"required"`

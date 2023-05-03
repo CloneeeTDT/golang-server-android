@@ -13,13 +13,13 @@ func NewRouter() *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	router.Use(CORSMiddleware())
-	router.Use(JWTMiddleware())
 	health := new(controllers.HealthController)
 
 	router.GET("/health", health.Status)
 
 	v1 := router.Group("v1")
 	{
+		v1.Use(JWTMiddleware())
 		userGroup := v1.Group("user")
 		{
 			user := new(controllers.UserController)
@@ -31,6 +31,8 @@ func NewRouter() *gin.Engine {
 			auth := new(controllers.AuthController)
 			authGroup.POST("/login", auth.Login)
 			authGroup.POST("/register", auth.Register)
+			authGroup.PUT("/info", auth.ChangeInfo)
+			authGroup.PUT("/password", auth.ChangePassword)
 		}
 		wordGroup := v1.Group("word")
 		{
@@ -75,6 +77,10 @@ func CORSMiddleware() gin.HandlerFunc {
 func JWTMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.URL.Path, "/v1/auth") {
+			c.Next()
+			return
+		}
+		if strings.HasPrefix(c.Request.URL.Path, "/v1/translate") {
 			c.Next()
 			return
 		}
